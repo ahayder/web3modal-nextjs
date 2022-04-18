@@ -42,47 +42,20 @@ const providerOptions = {
 let web3Modal
 if (typeof window !== 'undefined') {
   web3Modal = new Web3Modal({
-    network: 'mainnet', // optional
+    network: 'testnet', // optional
     cacheProvider: true,
     providerOptions, // required
   })
 }
 
-type StateType = {
-  provider?: any
-  web3Provider?: any
-  address?: string
-  chainId?: number
-}
-
-type ActionType =
-  | {
-      type: 'SET_WEB3_PROVIDER'
-      provider?: StateType['provider']
-      web3Provider?: StateType['web3Provider']
-      address?: StateType['address']
-      chainId?: StateType['chainId']
-    }
-  | {
-      type: 'SET_ADDRESS'
-      address?: StateType['address']
-    }
-  | {
-      type: 'SET_CHAIN_ID'
-      chainId?: StateType['chainId']
-    }
-  | {
-      type: 'RESET_WEB3_PROVIDER'
-    }
-
-const initialState: StateType = {
+const initialState = {
   provider: null,
   web3Provider: null,
   address: null,
   chainId: null,
 }
 
-function reducer(state: StateType, action: ActionType): StateType {
+function reducer(state, action) {
   switch (action.type) {
     case 'SET_WEB3_PROVIDER':
       return {
@@ -109,7 +82,7 @@ function reducer(state: StateType, action: ActionType): StateType {
   }
 }
 
-export const Home = (): JSX.Element => {
+export const Home = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const { provider, web3Provider, address, chainId } = state
 
@@ -162,7 +135,7 @@ export const Home = (): JSX.Element => {
   // local React state with that new information.
   useEffect(() => {
     if (provider?.on) {
-      const handleAccountsChanged = (accounts: string[]) => {
+      const handleAccountsChanged = (accounts) => {
         // eslint-disable-next-line no-console
         console.log('accountsChanged', accounts)
         dispatch({
@@ -172,11 +145,11 @@ export const Home = (): JSX.Element => {
       }
 
       // https://docs.ethers.io/v5/concepts/best-practices/#best-practices--network-changes
-      const handleChainChanged = (_hexChainId: string) => {
+      const handleChainChanged = (_hexChainId) => {
         window.location.reload()
       }
 
-      const handleDisconnect = (error: { code: number; message: string }) => {
+      const handleDisconnect = (error) => {
         // eslint-disable-next-line no-console
         console.log('disconnect', error)
         disconnect()
